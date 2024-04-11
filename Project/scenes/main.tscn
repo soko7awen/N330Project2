@@ -62,8 +62,7 @@ scale = Vector2(2, 2)
 texture = ExtResource("3_hco4p")
 
 [node name="LeftHand" type="Sprite2D" parent="."]
-position = Vector2(192, 452)
-scale = Vector2(2, 2)
+position = Vector2(96, 442)
 texture = ExtResource("4_n444t")
 
 [node name="ShelfMarkers" type="Node2D" parent="."]
