@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfdlab6im6hvc"
-path="res://.godot/imported/shopkeep.png-702eb5c552d3f69b253756da4526d56b.ctex"
+uid="uid://corstvi1yt74j"
+path="res://.godot/imported/crown_icon.png-6c853f81ead0e0fb4ebb8c8aeb066460.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entities/shopkeep/shopkeep.png"
-dest_files=["res://.godot/imported/shopkeep.png-702eb5c552d3f69b253756da4526d56b.ctex"]
+source_file="res://entities/items/crown/crown_icon.png"
+dest_files=["res://.godot/imported/crown_icon.png-6c853f81ead0e0fb4ebb8c8aeb066460.ctex"]
 
 [params]
 

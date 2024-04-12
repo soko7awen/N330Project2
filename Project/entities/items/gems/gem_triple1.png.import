@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfdlab6im6hvc"
-path="res://.godot/imported/shopkeep.png-702eb5c552d3f69b253756da4526d56b.ctex"
+uid="uid://c73teoxbyfmbr"
+path="res://.godot/imported/gem_triple1.png-033687d457367056f9ab8d4456efb256.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entities/shopkeep/shopkeep.png"
-dest_files=["res://.godot/imported/shopkeep.png-702eb5c552d3f69b253756da4526d56b.ctex"]
+source_file="res://entities/items/gems/gem_triple1.png"
+dest_files=["res://.godot/imported/gem_triple1.png-033687d457367056f9ab8d4456efb256.ctex"]
 
 [params]
 

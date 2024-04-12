@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfdlab6im6hvc"
-path="res://.godot/imported/shopkeep.png-702eb5c552d3f69b253756da4526d56b.ctex"
+uid="uid://ce6jfb1qk8xup"
+path="res://.godot/imported/distractionbar_icon.png-bbc9a6706b33a8a19d7e47834de8265d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entities/shopkeep/shopkeep.png"
-dest_files=["res://.godot/imported/shopkeep.png-702eb5c552d3f69b253756da4526d56b.ctex"]
+source_file="res://ui/distractionbar_icon.png"
+dest_files=["res://.godot/imported/distractionbar_icon.png-bbc9a6706b33a8a19d7e47834de8265d.ctex"]
 
 [params]
 

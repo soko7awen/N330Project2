@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dv8euteqim3na"
-path="res://.godot/imported/ShopkeepR.png-ba93d4e669a16194c5eb5e4a228d8963.ctex"
+uid="uid://cvste8e043xgf"
+path="res://.godot/imported/coin_bag4.png-78a30285a62cf2ce366821695bb1c430.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entities/shopkeep/ShopkeepR.png"
-dest_files=["res://.godot/imported/ShopkeepR.png-ba93d4e669a16194c5eb5e4a228d8963.ctex"]
+source_file="res://entities/items/coin_bag/coin_bag4.png"
+dest_files=["res://.godot/imported/coin_bag4.png-78a30285a62cf2ce366821695bb1c430.ctex"]
 
 [params]
 

@@ -1,10 +1,19 @@
-[gd_scene load_steps=10 format=3 uid="uid://bvnq3ihcq0wv5"]
+[gd_scene load_steps=19 format=3 uid="uid://bvnq3ihcq0wv5"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_ugoic"]
 [ext_resource type="Texture2D" uid="uid://dhpocmwr8t1rf" path="res://ui/cursor.png" id="2_upoqs"]
+[ext_resource type="Texture2D" uid="uid://ojnb75vsbxf7" path="res://ui/distractionbar_empty.png" id="3_6jo23"]
 [ext_resource type="Texture2D" uid="uid://bwnyygajk5akb" path="res://ui/right_hand_aim.png" id="3_hco4p"]
 [ext_resource type="Texture2D" uid="uid://2wfoqqn4a5or" path="res://ui/ball.png" id="4_hkygl"]
 [ext_resource type="Texture2D" uid="uid://ca6g1w13mniov" path="res://ui/left_hand.png" id="4_n444t"]
+[ext_resource type="Texture2D" uid="uid://3dpayfjb657w" path="res://ui/distractionbar_full.png" id="4_r6jam"]
+[ext_resource type="Texture2D" uid="uid://ce6jfb1qk8xup" path="res://ui/distractionbar_icon.png" id="6_soser"]
+[ext_resource type="PackedScene" uid="uid://dpmpd3c7aj66g" path="res://entities/items/item.tscn" id="6_vt5ph"]
+[ext_resource type="AnimationLibrary" uid="uid://dvf0dx0kehgy0" path="res://globals/animation_library.tres" id="7_lo4so"]
+[ext_resource type="Script" path="res://ui/Ball.gd" id="7_vybxq"]
+[ext_resource type="Texture2D" uid="uid://dfdlab6im6hvc" path="res://entities/shopkeep/shopkeep.png" id="8_bjod3"]
+[ext_resource type="Texture2D" uid="uid://d0ocmp2o0sypr" path="res://entities/items/coin_bag/coin_bag_icon.png" id="8_mbkdx"]
+[ext_resource type="Texture2D" uid="uid://dektal54le410" path="res://ui/item_slash.png" id="11_jpylb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_04f1q"]
 atlas = ExtResource("2_upoqs")
@@ -29,15 +38,41 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kycfc"]
-size = Vector2(48, 48)
+size = Vector2(64, 64)
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Control"]
 texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_ugoic")
 
+[node name="Node" type="Node" parent="."]
+
+[node name="Ding" type="AudioStreamPlayer" parent="Node"]
+
+[node name="Scrawling" type="AudioStreamPlayer" parent="Node"]
+
+[node name="ShelfMarkers" type="Node2D" parent="."]
+
+[node name="Shelf0" type="Marker2D" parent="ShelfMarkers"]
+position = Vector2(0, 124)
+gizmo_extents = 28.0
+
+[node name="Shelf1" type="Marker2D" parent="ShelfMarkers"]
+position = Vector2(0, 214)
+gizmo_extents = 28.0
+
+[node name="Shelf2" type="Marker2D" parent="ShelfMarkers"]
+position = Vector2(0, 304)
+gizmo_extents = 28.0
+
 [node name="Cursor" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, 90)
-scale = Vector2(2, 2)
+z_index = 2
+position = Vector2(0, 124)
 sprite_frames = SubResource("SpriteFrames_awmmg")
 autoplay = "default"
 
@@ -45,38 +80,167 @@ autoplay = "default"
 wait_time = 0.3
 one_shot = true
 
+[node name="DistractionBar" type="Control" parent="."]
+z_index = 3
+custom_minimum_size = Vector2(176, 24)
+layout_mode = 1
+anchor_left = 0.408333
+anchor_top = 0.0148148
+anchor_right = 0.591667
+anchor_bottom = 0.0592593
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Empty" type="TextureRect" parent="DistractionBar"]
+layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("3_6jo23")
+metadata/_edit_use_anchors_ = true
+
+[node name="FillMask" type="ColorRect" parent="DistractionBar"]
+clip_contents = true
+layout_mode = 2
+offset_right = 176.0
+offset_bottom = 24.0
+color = Color(1, 1, 1, 0)
+
+[node name="Fill" type="TextureRect" parent="DistractionBar/FillMask"]
+layout_mode = 1
+offset_bottom = 9.6
+texture = ExtResource("4_r6jam")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="Icon" type="TextureRect" parent="DistractionBar"]
+layout_mode = 2
+offset_left = 156.0
+offset_top = -8.0
+offset_right = 194.0
+offset_bottom = 29.0
+texture = ExtResource("6_soser")
+
 [node name="Ball" type="Sprite2D" parent="."]
 visible = false
-position = Vector2(1025, 512)
-scale = Vector2(2, 2)
+z_index = 1
+position = Vector2(905, 484)
 texture = ExtResource("4_hkygl")
+script = ExtResource("7_vybxq")
+peak = true
 
 [node name="Area2D" type="Area2D" parent="Ball"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ball/Area2D"]
 shape = SubResource("RectangleShape2D_kycfc")
 
-[node name="RightHand" type="Sprite2D" parent="."]
-position = Vector2(993, 484)
-scale = Vector2(2, 2)
-texture = ExtResource("3_hco4p")
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Ball"]
+libraries = {
+"": ExtResource("7_lo4so")
+}
 
-[node name="LeftHand" type="Sprite2D" parent="."]
-position = Vector2(96, 442)
+[node name="LeftHand" type="TextureRect" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -196.0
+offset_right = 192.0
+grow_vertical = 0
 texture = ExtResource("4_n444t")
 
-[node name="ShelfMarkers" type="Node2D" parent="."]
+[node name="ItemList" type="VBoxContainer" parent="LeftHand"]
+layout_mode = 0
+offset_left = 41.0
+offset_top = 79.0
+offset_right = 72.0
+offset_bottom = 183.0
+rotation = -0.316875
 
-[node name="Shelf0" type="Marker2D" parent="ShelfMarkers"]
-position = Vector2(0, 90)
-gizmo_extents = 28.0
+[node name="Item1" type="TextureRect" parent="LeftHand/ItemList"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+texture = ExtResource("8_mbkdx")
+expand_mode = 5
+stretch_mode = 5
 
-[node name="Shelf1" type="Marker2D" parent="ShelfMarkers"]
-position = Vector2(0, 180)
-gizmo_extents = 28.0
+[node name="Slash" type="TextureRect" parent="LeftHand/ItemList/Item1"]
+visible = false
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("11_jpylb")
 
-[node name="Shelf2" type="Marker2D" parent="ShelfMarkers"]
-position = Vector2(0, 270)
-gizmo_extents = 28.0
+[node name="Item2" type="TextureRect" parent="LeftHand/ItemList"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+texture = ExtResource("8_mbkdx")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="Slash" type="TextureRect" parent="LeftHand/ItemList/Item2"]
+visible = false
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("11_jpylb")
+
+[node name="Item3" type="TextureRect" parent="LeftHand/ItemList"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+texture = ExtResource("8_mbkdx")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="Slash" type="TextureRect" parent="LeftHand/ItemList/Item3"]
+visible = false
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("11_jpylb")
+
+[node name="RightHand" type="TextureRect" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -156.0
+offset_right = 10.0
+offset_bottom = 8.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("3_hco4p")
+
+[node name="Item" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(198, 124)
+
+[node name="Item2" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(775, 124)
+animation = &"crown"
+
+[node name="Item3" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(193, 214)
+animation = &"gems"
+
+[node name="Item4" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(779, 214)
+
+[node name="Item5" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(195, 304)
+animation = &"crown"
+
+[node name="Item6" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(779, 304)
+animation = &"gems"
+
+[node name="Shopkeep" type="Sprite2D" parent="."]
+position = Vector2(486, 265)
+texture = ExtResource("8_bjod3")
 
 [connection signal="timeout" from="Cursor/Timer" to="." method="_on_cursor_timer_timeout"]
+[connection signal="peak_now" from="Ball" to="." method="_on_ball_peak"]
+[connection signal="animation_finished" from="Ball/AnimationPlayer" to="." method="_on_ball_animation_finished"]
