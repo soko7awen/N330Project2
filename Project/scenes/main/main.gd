@@ -18,11 +18,11 @@ var shopkeep_tex = {
 
 var cursor_shelf = 0
 var item_list = [items.COIN_BAG,items.CROWN,items.GEMS]
-var list_crossed = item_list
+var list_crossed = item_list.duplicate(false)
 var status = AIMING
 
 var shopkeep_dir = 0
-var distraction = .5
+var distraction = .7
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
@@ -60,10 +60,9 @@ func _process(delta):
 	var distraction_position = $DistractionBar.size.x * distraction
 	$DistractionBar/FillMask.size.x = distraction_position
 	$DistractionBar/Icon.position.x = distraction_position - 19
-	if distraction >= 0: distraction -= .01 * delta
+	if distraction >= 0: distraction -= .02 * delta
 	else:
-		print("game over")
-		#get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
+		end_game(item_list.size()-list_crossed.size())
 	if distraction > .3:
 		$DistractionBar/Icon.texture = shopkeep_icons.normal
 	else:
@@ -88,6 +87,8 @@ func _on_ball_peak():
 			print("ding")
 			var i_dir_clamped = clampi(i.get_parent().position.x - $Shopkeep.position.x,-1,1)
 			var shopkeep_dir_clamped = clampi(shopkeep_dir,-1,1)
+			await get_tree().create_timer(.1).timeout
+			shopkeep_dir = clampi(i_dir_clamped,-1,1)
 			if i_dir_clamped != shopkeep_dir_clamped:
 				var item_id = items.get(i.get_parent().animation.to_upper())
 				if item_list.find(item_id) != -1:
@@ -95,20 +96,23 @@ func _on_ball_peak():
 					list_crossed.pop_at(list_crossed.find(item_id))
 					$LeftHand/ItemList.get_child(item_id).get_node("Slash").show()
 					if !list_crossed.size():
-						print("game over")
-						#get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
+						end_game(item_list.size()-list_crossed.size())
 			else:
-				print("game over")
-				#get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
+				end_game(item_list.size()-list_crossed.size())
 			i.get_parent().play()
 			break
 		elif i.is_in_group('distraction_area'):
-			var i_dir_clamped = clampi(i.get_parent().position.x - $Shopkeep.position.x,-1,1)
-			print("dong")
-			$Shopkeep/PositionTimer.set_paused(true)
-			$Shopkeep/DistractionTimer.start()
-			shopkeep_dir = clampi(shopkeep_dir+i_dir_clamped,-2,2)
-			distraction = clamp(distraction+.1,0,1)
+			if i.get_parent().used == false:
+				i.get_parent().used = true
+				var i_dir_clamped = clampi(i.get_parent().position.x - $Shopkeep.position.x,-1,1)
+				print("dong")
+				i.get_parent().play()
+				$Shopkeep/PositionTimer.set_paused(true)
+				$Shopkeep/DistractionTimer.start()
+				shopkeep_dir = clampi(shopkeep_dir+i_dir_clamped,-2,2)
+				distraction = clamp(distraction+.3,0,1)
+		elif i.is_in_group('pause_area'):
+			print("pause")
 
 func _on_ball_animation_finished(_anim_name):
 	if $Shopkeep/DistractionTimer.paused:
@@ -126,3 +130,8 @@ func _on_shopkeep_position_timer_timeout():
 
 func _on_shopkeep_distraction_timer_timeout():
 	$Shopkeep/PositionTimer.set_paused(false)
+	
+func end_game(items_grabbed):
+	GameEndStats.items_grabbed = items_grabbed
+	get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
+	

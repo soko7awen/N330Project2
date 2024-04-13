@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3062m8f2ofvg"
-path="res://.godot/imported/distraction2.png-0415614a992d6318d98014a3d7f601b0.ctex"
+uid="uid://b26k3u86ums4f"
+path="res://.godot/imported/bottles1.png-cbe35690c3b9d4185eb95057f716aba7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entities/distractions/distraction2.png"
-dest_files=["res://.godot/imported/distraction2.png-0415614a992d6318d98014a3d7f601b0.ctex"]
+source_file="res://entities/distractions/bottles/bottles1.png"
+dest_files=["res://.godot/imported/bottles1.png-cbe35690c3b9d4185eb95057f716aba7.ctex"]
 
 [params]
 

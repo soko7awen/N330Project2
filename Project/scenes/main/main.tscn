@@ -1,6 +1,6 @@
-[gd_scene load_steps=20 format=3 uid="uid://bvnq3ihcq0wv5"]
+[gd_scene load_steps=22 format=3 uid="uid://bvnq3ihcq0wv5"]
 
-[ext_resource type="Script" path="res://scenes/main.gd" id="1_ugoic"]
+[ext_resource type="Script" path="res://scenes/main/main.gd" id="1_ugoic"]
 [ext_resource type="Texture2D" uid="uid://dhpocmwr8t1rf" path="res://ui/cursor.png" id="2_upoqs"]
 [ext_resource type="Texture2D" uid="uid://ojnb75vsbxf7" path="res://ui/distractionbar_empty.png" id="3_6jo23"]
 [ext_resource type="Texture2D" uid="uid://bwnyygajk5akb" path="res://ui/right_hand_aim.png" id="3_hco4p"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://d0ocmp2o0sypr" path="res://entities/items/coin_bag/coin_bag_icon.png" id="8_mbkdx"]
 [ext_resource type="Texture2D" uid="uid://dektal54le410" path="res://ui/item_slash.png" id="11_jpylb"]
 [ext_resource type="PackedScene" uid="uid://b860ys2ckxmad" path="res://entities/distractions/distraction.tscn" id="15_s54gj"]
+[ext_resource type="Texture2D" uid="uid://cc3dcwj82gj8e" path="res://ui/begin.png" id="16_xl8oj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_04f1q"]
 atlas = ExtResource("2_upoqs")
@@ -40,6 +41,9 @@ animations = [{
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kycfc"]
 size = Vector2(64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5sgo1"]
+size = Vector2(240, 46.9995)
 
 [node name="Main" type="Control"]
 texture_filter = 1
@@ -256,9 +260,22 @@ wait_time = 2.0
 
 [node name="Distraction" parent="." instance=ExtResource("15_s54gj")]
 position = Vector2(324, 214)
+animation = &"bottles"
 
 [node name="Distraction2" parent="." instance=ExtResource("15_s54gj")]
 position = Vector2(692, 304)
+animation = &"bottles"
+
+[node name="PauseButton" type="Sprite2D" parent="."]
+position = Vector2(25, 213)
+rotation = 1.57079
+texture = ExtResource("16_xl8oj")
+
+[node name="Area2D" type="Area2D" parent="PauseButton" groups=["pause_area"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PauseButton/Area2D"]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_5sgo1")
 
 [connection signal="timeout" from="Cursor/Timer" to="." method="_on_cursor_timer_timeout"]
 [connection signal="peak_now" from="Ball" to="." method="_on_ball_peak"]
