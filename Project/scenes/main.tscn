@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bvnq3ihcq0wv5"]
+[gd_scene load_steps=20 format=3 uid="uid://bvnq3ihcq0wv5"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_ugoic"]
 [ext_resource type="Texture2D" uid="uid://dhpocmwr8t1rf" path="res://ui/cursor.png" id="2_upoqs"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://dfdlab6im6hvc" path="res://entities/shopkeep/shopkeep.png" id="8_bjod3"]
 [ext_resource type="Texture2D" uid="uid://d0ocmp2o0sypr" path="res://entities/items/coin_bag/coin_bag_icon.png" id="8_mbkdx"]
 [ext_resource type="Texture2D" uid="uid://dektal54le410" path="res://ui/item_slash.png" id="11_jpylb"]
+[ext_resource type="PackedScene" uid="uid://b860ys2ckxmad" path="res://entities/distractions/distraction.tscn" id="15_s54gj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_04f1q"]
 atlas = ExtResource("2_upoqs")
@@ -88,6 +89,10 @@ anchor_left = 0.408333
 anchor_top = 0.0148148
 anchor_right = 0.591667
 anchor_bottom = 0.0592593
+offset_left = 0.000305176
+offset_top = 2.00001
+offset_right = 0.000305176
+offset_bottom = 2.00001
 grow_horizontal = 2
 metadata/_edit_use_anchors_ = true
 
@@ -241,6 +246,22 @@ animation = &"gems"
 position = Vector2(486, 265)
 texture = ExtResource("8_bjod3")
 
+[node name="PositionTimer" type="Timer" parent="Shopkeep"]
+wait_time = 2.0
+one_shot = true
+autostart = true
+
+[node name="DistractionTimer" type="Timer" parent="Shopkeep"]
+wait_time = 2.0
+
+[node name="Distraction" parent="." instance=ExtResource("15_s54gj")]
+position = Vector2(324, 214)
+
+[node name="Distraction2" parent="." instance=ExtResource("15_s54gj")]
+position = Vector2(692, 304)
+
 [connection signal="timeout" from="Cursor/Timer" to="." method="_on_cursor_timer_timeout"]
 [connection signal="peak_now" from="Ball" to="." method="_on_ball_peak"]
 [connection signal="animation_finished" from="Ball/AnimationPlayer" to="." method="_on_ball_animation_finished"]
+[connection signal="timeout" from="Shopkeep/PositionTimer" to="." method="_on_shopkeep_position_timer_timeout"]
+[connection signal="timeout" from="Shopkeep/DistractionTimer" to="." method="_on_shopkeep_distraction_timer_timeout"]

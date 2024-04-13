@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://b860ys2ckxmad"]
+
+[ext_resource type="Texture2D" uid="uid://b26k3u86ums4f" path="res://entities/distractions/distraction1.png" id="1_71ih3"]
+[ext_resource type="Texture2D" uid="uid://c3062m8f2ofvg" path="res://entities/distractions/distraction2.png" id="2_07say"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_41rgd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_71ih3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_07say")
+}],
+"loop": false,
+"name": &"firecrackers",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w7xp6"]
+size = Vector2(64, 64)
+
+[node name="Distraction" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_41rgd")
+animation = &"firecrackers"
+
+[node name="Area2D" type="Area2D" parent="." groups=["distraction_area"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_w7xp6")
+
+[connection signal="animation_finished" from="." to="." method="_on_animation_finished"]

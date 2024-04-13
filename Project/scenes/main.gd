@@ -4,6 +4,9 @@ var animation_library: AnimationLibrary = load("res://globals/animation_library.
 enum {EMPTY,AIMING,THROWING}
 var right_hand_tex = [load("res://ui/right_hand_empty.png"),load("res://ui/right_hand_aim.png"),load("res://ui/right_hand_throw.png")]
 var cursor_scrolling = false
+var shopkeep_icons = {
+	"normal": load("res://ui/distractionbar_icon.png"),
+	"sus": load("res://ui/distractionbar_icon_sus.png")}
 enum items {COIN_BAG,CROWN,GEMS}
 var item_icons = [load("res://entities/items/coin_bag/coin_bag_icon.png"),load("res://entities/items/crown/crown_icon.png"),load("res://entities/items/gems/gem_triple_icon.png")]
 var shopkeep_tex = {
@@ -11,8 +14,7 @@ var shopkeep_tex = {
 	-1: load("res://entities/shopkeep/shopkeep_l.png"),
 	0: load("res://entities/shopkeep/shopkeep.png"),
 	1: load("res://entities/shopkeep/shopkeep_r.png"),
-	2: load("res://entities/shopkeep/shopkeep_rr.png"),
-}
+	2: load("res://entities/shopkeep/shopkeep_rr.png")}
 
 var cursor_shelf = 0
 var item_list = [items.COIN_BAG,items.CROWN,items.GEMS]
@@ -42,17 +44,11 @@ func _process(delta):
 			var opposite_x = $Cursor.position.x - (896-$Cursor.position.x)
 			animation_library.get_animation('throw').track_set_key_value(0,2,Vector2(opposite_x,600))
 			$Ball.show()
+			$Shopkeep/PositionTimer.stop()
+			$Shopkeep/DistractionTimer.stop()
 			$Ball/AnimationPlayer.play('throw')
-	
-	if Input.is_action_just_pressed("ui_left"):
-		if shopkeep_dir > -2:
-			shopkeep_dir -= 1
-	if Input.is_action_just_pressed("ui_right"):
-		if shopkeep_dir < 2:
-			shopkeep_dir += 1
+			
 	$Shopkeep.texture = shopkeep_tex.get(shopkeep_dir)
-	
-	
 	#Status
 	$RightHand.texture = right_hand_tex[status]
 	if status == AIMING:
@@ -66,7 +62,13 @@ func _process(delta):
 	$DistractionBar/Icon.position.x = distraction_position - 19
 	if distraction >= 0: distraction -= .01 * delta
 	else:
-		get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
+		print("game over")
+		#get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
+	if distraction > .3:
+		$DistractionBar/Icon.texture = shopkeep_icons.normal
+	else:
+		$DistractionBar/Icon.texture = shopkeep_icons.sus
+		$Shopkeep/PositionTimer.wait_time = 1
 
 func scroll_cursor():
 	if $Cursor/Timer.is_stopped():
@@ -84,19 +86,43 @@ func _on_ball_peak():
 	for i in $Ball/Area2D.get_overlapping_areas():
 		if i.is_in_group('item_area'):
 			print("ding")
-			var item_id = items.get(i.get_parent().animation.to_upper())
-			if item_list.find(item_id) != -1:
-				print("scrawling")
-				list_crossed.pop_at(list_crossed.find(item_id))
-				$LeftHand/ItemList.get_child(item_id).get_node("Slash").show()
-				if !list_crossed.size():
-					get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
+			var i_dir_clamped = clampi(i.get_parent().position.x - $Shopkeep.position.x,-1,1)
+			var shopkeep_dir_clamped = clampi(shopkeep_dir,-1,1)
+			if i_dir_clamped != shopkeep_dir_clamped:
+				var item_id = items.get(i.get_parent().animation.to_upper())
+				if item_list.find(item_id) != -1:
+					print("scrawling")
+					list_crossed.pop_at(list_crossed.find(item_id))
+					$LeftHand/ItemList.get_child(item_id).get_node("Slash").show()
+					if !list_crossed.size():
+						print("game over")
+						#get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
+			else:
+				print("game over")
+				#get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
 			i.get_parent().play()
 			break
+		elif i.is_in_group('distraction_area'):
+			var i_dir_clamped = clampi(i.get_parent().position.x - $Shopkeep.position.x,-1,1)
+			print("dong")
+			$Shopkeep/PositionTimer.set_paused(true)
+			$Shopkeep/DistractionTimer.start()
+			shopkeep_dir = clampi(shopkeep_dir+i_dir_clamped,-2,2)
+			distraction = clamp(distraction+.1,0,1)
 
-func _on_ball_animation_finished(anim_name):
-	if anim_name == 'throw':
-		status = AIMING
-		cursor_shelf = 0
-		$Cursor.position.y = $ShelfMarkers.get_child(cursor_shelf).position.y
-		$Cursor.show()
+func _on_ball_animation_finished(_anim_name):
+	if $Shopkeep/DistractionTimer.paused:
+		$Shopkeep/DistractionTimer.set_paused(false)
+	else:
+		$Shopkeep/PositionTimer.start()
+	status = AIMING
+	cursor_shelf = 0
+	$Cursor.position.y = $ShelfMarkers.get_child(cursor_shelf).position.y
+	$Cursor.show()
+
+func _on_shopkeep_position_timer_timeout():
+	shopkeep_dir = clampi(shopkeep_dir+randi_range(-1,1),-2,2)
+	$Shopkeep/PositionTimer.start()
+
+func _on_shopkeep_distraction_timer_timeout():
+	$Shopkeep/PositionTimer.set_paused(false)
