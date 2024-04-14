@@ -15,7 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://d0ocmp2o0sypr" path="res://entities/items/coin_bag/coin_bag_icon.png" id="8_mbkdx"]
 [ext_resource type="Texture2D" uid="uid://dektal54le410" path="res://ui/item_slash.png" id="11_jpylb"]
 [ext_resource type="PackedScene" uid="uid://b860ys2ckxmad" path="res://entities/distractions/distraction.tscn" id="15_s54gj"]
-[ext_resource type="Texture2D" uid="uid://cc3dcwj82gj8e" path="res://ui/begin.png" id="16_xl8oj"]
+[ext_resource type="FontFile" uid="uid://dl8717bgierds" path="res://ui/pixelify_sans_regular.ttf" id="16_tp0q4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_04f1q"]
 atlas = ExtResource("2_upoqs")
@@ -40,10 +40,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kycfc"]
-size = Vector2(64, 64)
+size = Vector2(8, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5sgo1"]
-size = Vector2(240, 46.9995)
+size = Vector2(240, 48)
 
 [node name="Main" type="Control"]
 texture_filter = 1
@@ -224,28 +224,6 @@ grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("3_hco4p")
 
-[node name="Item" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(198, 124)
-
-[node name="Item2" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(775, 124)
-animation = &"crown"
-
-[node name="Item3" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(193, 214)
-animation = &"gems"
-
-[node name="Item4" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(779, 214)
-
-[node name="Item5" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(195, 304)
-animation = &"crown"
-
-[node name="Item6" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(779, 304)
-animation = &"gems"
-
 [node name="Shopkeep" type="Sprite2D" parent="."]
 position = Vector2(486, 265)
 texture = ExtResource("8_bjod3")
@@ -256,26 +234,77 @@ one_shot = true
 autostart = true
 
 [node name="DistractionTimer" type="Timer" parent="Shopkeep"]
-wait_time = 2.0
+wait_time = 3.0
+
+[node name="Item" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(198, 124)
+animation = &"coin_bag"
+
+[node name="Item2" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(775, 124)
+animation = &"crown"
+
+[node name="Item3" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(193, 214)
+
+[node name="Item4" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(779, 214)
+animation = &"crown"
+
+[node name="Item5" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(195, 304)
+animation = &"coin_bag"
+
+[node name="Item6" parent="." instance=ExtResource("6_vt5ph")]
+position = Vector2(779, 304)
+animation = &"coin_bag"
 
 [node name="Distraction" parent="." instance=ExtResource("15_s54gj")]
-position = Vector2(324, 214)
-animation = &"bottles"
+position = Vector2(325, 104)
 
 [node name="Distraction2" parent="." instance=ExtResource("15_s54gj")]
-position = Vector2(692, 304)
-animation = &"bottles"
+position = Vector2(635, 104)
+animation = &"firecrackers"
 
-[node name="PauseButton" type="Sprite2D" parent="."]
-position = Vector2(25, 213)
+[node name="Distraction3" parent="." instance=ExtResource("15_s54gj")]
+position = Vector2(325, 267)
+animation = &"firecrackers"
+
+[node name="Distraction4" parent="." instance=ExtResource("15_s54gj")]
+position = Vector2(636, 267)
+animation = &"jack_in_the_box"
+
+[node name="PauseButton" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 94.0
+offset_right = 288.0
+offset_bottom = 142.0
 rotation = 1.57079
-texture = ExtResource("16_xl8oj")
+color = Color(0.494118, 0.494118, 0.494118, 1)
 
 [node name="Area2D" type="Area2D" parent="PauseButton" groups=["pause_area"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PauseButton/Area2D"]
-position = Vector2(0, -0.5)
+position = Vector2(120, 24.0008)
 shape = SubResource("RectangleShape2D_5sgo1")
+
+[node name="Label" type="Label" parent="PauseButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -57.0
+offset_top = -23.5
+offset_right = 57.0
+offset_bottom = 23.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("16_tp0q4")
+theme_override_font_sizes/font_size = 39
+text = "Pause"
 
 [connection signal="timeout" from="Cursor/Timer" to="." method="_on_cursor_timer_timeout"]
 [connection signal="peak_now" from="Ball" to="." method="_on_ball_peak"]

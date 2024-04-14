@@ -87,11 +87,13 @@ func _on_ball_peak():
 			print("ding")
 			var i_dir_clamped = clampi(i.get_parent().position.x - $Shopkeep.position.x,-1,1)
 			var shopkeep_dir_clamped = clampi(shopkeep_dir,-1,1)
-			await get_tree().create_timer(.1).timeout
-			shopkeep_dir = clampi(i_dir_clamped,-1,1)
+			var item_id = items.get(i.get_parent().animation.to_upper())
+			i.get_parent().play()
+			await get_tree().create_timer(1).timeout
+			if !$Shopkeep/DistractionTimer.time_left:
+				shopkeep_dir = clampi(i_dir_clamped,-1,1)
 			if i_dir_clamped != shopkeep_dir_clamped:
-				var item_id = items.get(i.get_parent().animation.to_upper())
-				if item_list.find(item_id) != -1:
+				if list_crossed.find(item_id) != -1:
 					print("scrawling")
 					list_crossed.pop_at(list_crossed.find(item_id))
 					$LeftHand/ItemList.get_child(item_id).get_node("Slash").show()
@@ -99,7 +101,6 @@ func _on_ball_peak():
 						end_game(item_list.size()-list_crossed.size())
 			else:
 				end_game(item_list.size()-list_crossed.size())
-			i.get_parent().play()
 			break
 		elif i.is_in_group('distraction_area'):
 			if i.get_parent().used == false:
@@ -109,10 +110,10 @@ func _on_ball_peak():
 				i.get_parent().play()
 				$Shopkeep/PositionTimer.set_paused(true)
 				$Shopkeep/DistractionTimer.start()
-				shopkeep_dir = clampi(shopkeep_dir+i_dir_clamped,-2,2)
+				shopkeep_dir = clampi(i_dir_clamped,-1,1)*2
 				distraction = clamp(distraction+.3,0,1)
 		elif i.is_in_group('pause_area'):
-			print("pause")
+			WindowControls.pause()
 
 func _on_ball_animation_finished(_anim_name):
 	if $Shopkeep/DistractionTimer.paused:

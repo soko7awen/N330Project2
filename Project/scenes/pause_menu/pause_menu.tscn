@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://dei7nhbtwn3v1"]
+
+[ext_resource type="Script" path="res://scenes/pause_menu/pause_menu.gd" id="1_dn1ki"]
+[ext_resource type="FontFile" uid="uid://dl8717bgierds" path="res://ui/pixelify_sans_regular.ttf" id="2_6ypib"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 101
+visible = false
+script = ExtResource("1_dn1ki")
+
+[node name="Control" type="Control" parent="."]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.145098, 0.145098, 0.145098, 0.592157)
+
+[node name="UnpauseButton" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -15.5
+offset_right = 80.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+pivot_offset = Vector2(80, 15)
+theme_override_fonts/font = ExtResource("2_6ypib")
+theme_override_font_sizes/font_size = 21
+text = "Unpause"
+
+[connection signal="pressed" from="Control/UnpauseButton" to="." method="unpause"]

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/game_over/game_over.gd" id="1_ilibl"]
 [ext_resource type="Texture2D" uid="uid://cjpitfdurcaqg" path="res://scenes/game_over/ui-background-lose.png" id="2_d2ayf"]
-[ext_resource type="FontFile" uid="uid://dl8717bgierds" path="res://ui/PixelifySans-Regular.ttf" id="3_hjnrg"]
+[ext_resource type="FontFile" uid="uid://dl8717bgierds" path="res://ui/pixelify_sans_regular.ttf" id="3_hjnrg"]
 
 [node name="GameOver" type="Control"]
 layout_mode = 3

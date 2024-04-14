@@ -3,17 +3,17 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://dl8717bgierds"
-path="res://.godot/imported/PixelifySans-Regular.ttf-297ade3f263fd4204ce23d4693a19b10.fontdata"
+path="res://.godot/imported/pixelify_sans_regular.ttf-a059f0da5adc19f76648c045a2338fec.fontdata"
 
 [deps]
 
-source_file="res://ui/PixelifySans-Regular.ttf"
-dest_files=["res://.godot/imported/PixelifySans-Regular.ttf-297ade3f263fd4204ce23d4693a19b10.fontdata"]
+source_file="res://ui/pixelify_sans_regular.ttf"
+dest_files=["res://.godot/imported/pixelify_sans_regular.ttf-a059f0da5adc19f76648c045a2338fec.fontdata"]
 
 [params]
 
 Rendering=null
-antialiasing=1
+antialiasing=0
 generate_mipmaps=false
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
