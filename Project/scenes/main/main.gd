@@ -28,6 +28,7 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	for i in $LeftHand/ItemList.get_child_count():
 		$LeftHand/ItemList.get_child(i).texture = item_icons[item_list[i]]
+	GameEndStats.start_time = Time.get_unix_time_from_system()
 
 func _process(delta):
 	#Input
@@ -134,5 +135,6 @@ func _on_shopkeep_distraction_timer_timeout():
 	
 func end_game(items_grabbed):
 	GameEndStats.items_grabbed = items_grabbed
+	GameEndStats.end_time = Time.get_unix_time_from_system()
 	get_tree().change_scene_to_file("res://scenes/game_over/game_over.tscn")
 	
