@@ -16,6 +16,7 @@ var shopkeep_tex = {
 	1: load("res://entities/shopkeep/shopkeep_r.png"),
 	2: load("res://entities/shopkeep/shopkeep_rr.png")}
 
+var started = false
 var cursor_shelf = 0
 var item_list = [items.COIN_BAG,items.CROWN,items.GEMS]
 var list_crossed = item_list.duplicate(false)
@@ -40,6 +41,7 @@ func _process(delta):
 			status = EMPTY
 			$Cursor.hide()
 			$Ball.position = $RightHand.position+Vector2(96,96)
+			$Ball/AnimationPlayer.play('RESET')
 			animation_library.get_animation('throw').track_set_key_value(0,0,$Ball.position)
 			animation_library.get_animation('throw').track_set_key_value(0,1,$Cursor.position)
 			var opposite_x = $Cursor.position.x - (896-$Cursor.position.x)
@@ -57,18 +59,19 @@ func _process(delta):
 		$RightHand.position.x = 810 - get_global_mouse_position().x / 300
 	if status == THROWING:
 		if !cursor_scrolling: scroll_cursor()
-	#Distraction
-	var distraction_position = $DistractionBar.size.x * distraction
-	$DistractionBar/FillMask.size.x = distraction_position
-	$DistractionBar/Icon.position.x = distraction_position - 19
-	if distraction >= 0: distraction -= .02 * delta
-	else:
-		end_game(item_list.size()-list_crossed.size())
-	if distraction > .3:
-		$DistractionBar/Icon.texture = shopkeep_icons.normal
-	else:
-		$DistractionBar/Icon.texture = shopkeep_icons.sus
-		$Shopkeep/PositionTimer.wait_time = 1
+	if started:
+		#Distraction
+		var distraction_position = $DistractionBar.size.x * distraction
+		$DistractionBar/FillMask.size.x = distraction_position
+		$DistractionBar/Icon.position.x = distraction_position - 19
+		if distraction >= 0: distraction -= .02 * delta
+		else:
+			end_game(item_list.size()-list_crossed.size())
+		if distraction > .3:
+			$DistractionBar/Icon.texture = shopkeep_icons.normal
+		else:
+			$DistractionBar/Icon.texture = shopkeep_icons.sus
+			$Shopkeep/PositionTimer.wait_time = 1
 
 func scroll_cursor():
 	if $Cursor/Timer.is_stopped():
@@ -76,15 +79,26 @@ func scroll_cursor():
 
 func _on_cursor_timer_timeout():
 	if status == THROWING:
-		$Cursor.position.y = $ShelfMarkers.get_child(cursor_shelf).position.y
+		if started:
+			$Cursor.position.y = $ShelfMarkers.get_child(cursor_shelf).position.y
+		else:
+			$Cursor.position.y = $TitleMarkers.get_child(cursor_shelf).global_position.y
 		$RightHand.position.y = 384 - cursor_shelf*2
 		if cursor_shelf < 2: cursor_shelf += 1
 		else: cursor_shelf = 0
 		scroll_cursor()
 
 func _on_ball_peak():
+	if started:
+		$Ball.z_index = 1
 	for i in $Ball/Area2D.get_overlapping_areas():
-		if i.is_in_group('item_area'):
+		if i.is_in_group('begin_area'):
+			print("starting")
+			started = true
+			$Title.hide()
+			$DistractionBar.show()
+			$Shopkeep/PositionTimer.start()
+		elif i.is_in_group('item_area'):
 			print("ding")
 			var i_dir_clamped = clampi(i.get_parent().position.x - $Shopkeep.position.x,-1,1)
 			var shopkeep_dir_clamped = clampi(shopkeep_dir,-1,1)
@@ -123,7 +137,10 @@ func _on_ball_animation_finished(_anim_name):
 		$Shopkeep/PositionTimer.start()
 	status = AIMING
 	cursor_shelf = 0
-	$Cursor.position.y = $ShelfMarkers.get_child(cursor_shelf).position.y
+	if started:
+		$Cursor.position.y = $ShelfMarkers.get_child(cursor_shelf).position.y
+	else:
+		$Cursor.position.y = $TitleMarkers.get_child(cursor_shelf).global_position.y
 	$Cursor.show()
 
 func _on_shopkeep_position_timer_timeout():
