@@ -7,8 +7,8 @@ var cursor_scrolling = false
 var shopkeep_icons = {
 	"normal": load("res://ui/distractionbar_icon.png"),
 	"sus": load("res://ui/distractionbar_icon_sus.png")}
-enum items {COIN_BAG,CROWN,GEMS}
-var item_icons = [load("res://entities/items/coin_bag/coin_bag_icon.png"),load("res://entities/items/crown/crown_icon.png"),load("res://entities/items/gems/gem_triple_icon.png")]
+enum items {COIN_BAG,CROWN,GEMS,POTION}
+var item_icons = [load("res://ui/icon_coin_bag.png"),load("res://ui/icon_crown.png"),load("res://ui/icon_gems.png"),load("res://entities/items/potion/potion1.png")]
 var shopkeep_tex = {
 	-2: load("res://entities/shopkeep/shopkeep_ll.png"),
 	-1: load("res://entities/shopkeep/shopkeep_l.png"),
@@ -34,6 +34,8 @@ var distraction = .7
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	for i in item_list:
+		i = randi_range(0,2)
 	for i in $LeftHand/ItemList.get_child_count():
 		$LeftHand/ItemList.get_child(i).texture = item_icons[item_list[i]]
 	if GameEndStats.first_game:
@@ -106,13 +108,14 @@ func _on_ball_peak():
 				WindowControls.pause()
 			elif i.is_in_group('item_area'):
 				print("ding")
-				var i_dir_clamped = clampi(i.get_parent().position.x - $Shopkeep.position.x,-1,1)
+				var i_dir_clamped = clampi(i.get_parent().global_position.x - $Shopkeep.global_position.x,-1,1)
 				var shopkeep_dir_clamped = clampi(shopkeep_dir,-1,1)
 				var item_id = items.get(i.get_parent().animation.to_upper())
 				i.get_parent().play()
 				await get_tree().create_timer(1).timeout
 				if !$Shopkeep/DistractionTimer.time_left:
-					shopkeep_dir = clampi(i_dir_clamped,-1,1)
+					shopkeep_dir = i_dir_clamped
+				distraction = clamp(distraction-.1,0,1)
 				if i_dir_clamped != shopkeep_dir_clamped:
 					if list_crossed.find(item_id) != -1:
 						print("scrawling")
@@ -126,13 +129,14 @@ func _on_ball_peak():
 			elif i.is_in_group('distraction_area'):
 				if i.get_parent().used == false:
 					i.get_parent().used = true
-					var i_dir_clamped = clampi(i.get_parent().position.x - $Shopkeep.position.x,-1,1)
+					var i_dir_clamped = clampi(i.get_parent().global_position.x - $Shopkeep.global_position.x,-1,1)
 					print("dong")
 					i.get_parent().play()
 					$Shopkeep/PositionTimer.set_paused(true)
 					$Shopkeep/DistractionTimer.start()
 					shopkeep_dir = clampi(i_dir_clamped,-1,1)*2
-					distraction = clamp(distraction+.3,0,1)
+					distraction = clamp(distraction+.4,0,1)
+		distraction = clamp(distraction-.1,0,1)
 	else:
 		for i in $Ball/Area2D.get_overlapping_areas():
 			if i.is_in_group('begin_area'):
