@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bvnq3ihcq0wv5"]
+[gd_scene load_steps=34 format=3 uid="uid://bvnq3ihcq0wv5"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_ugoic"]
 [ext_resource type="Texture2D" uid="uid://b2ekrwndbhis3" path="res://ui/title.png" id="2_jihug"]
@@ -18,7 +18,10 @@
 [ext_resource type="AnimationLibrary" uid="uid://dvf0dx0kehgy0" path="res://globals/animation_library.tres" id="7_lo4so"]
 [ext_resource type="Texture2D" uid="uid://dfdlab6im6hvc" path="res://entities/shopkeep/shopkeep.png" id="8_bjod3"]
 [ext_resource type="Texture2D" uid="uid://d0ocmp2o0sypr" path="res://entities/items/coin_bag/coin_bag_icon.png" id="8_mbkdx"]
+[ext_resource type="Texture2D" uid="uid://dk8ohftunwrvg" path="res://ui/instructions_mousehighlight.png" id="11_8tk2v"]
 [ext_resource type="Texture2D" uid="uid://dektal54le410" path="res://ui/item_slash.png" id="11_jpylb"]
+[ext_resource type="Texture2D" uid="uid://76mcet1cjdbg" path="res://ui/instructions_mousescroll.png" id="11_sw3pa"]
+[ext_resource type="Texture2D" uid="uid://bgg7at5w7tva5" path="res://ui/instructions_mouseclick.png" id="12_lybr4"]
 [ext_resource type="Texture2D" uid="uid://bhuhssfo75qie" path="res://scenes/main/table.png" id="15_7e7n7"]
 [ext_resource type="PackedScene" uid="uid://b860ys2ckxmad" path="res://entities/distractions/distraction.tscn" id="15_s54gj"]
 [ext_resource type="FontFile" uid="uid://dl8717bgierds" path="res://ui/pixelify_sans_regular.ttf" id="16_tp0q4"]
@@ -47,6 +50,58 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="Animation" id="Animation_gl4cm"]
+resource_name = "fade"
+length = 3.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.5, 3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_52kw8"]
+resource_name = "click"
+length = 3.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.5, 3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:texture")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.7, 2.1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [ExtResource("11_8tk2v"), ExtResource("12_lybr4"), ExtResource("11_8tk2v")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_knjfh"]
+_data = {
+"click": SubResource("Animation_52kw8"),
+"fade": SubResource("Animation_gl4cm")
+}
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kycfc"]
 size = Vector2(8, 8)
@@ -142,8 +197,8 @@ gizmo_extents = 28.0
 
 [node name="Bkg" type="TextureRect" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 960.0
+offset_bottom = 540.0
 texture = ExtResource("2_qyw7l")
 
 [node name="Shelf" type="TextureRect" parent="."]
@@ -206,6 +261,36 @@ offset_top = -8.0
 offset_right = 194.0
 offset_bottom = 29.0
 texture = ExtResource("6_soser")
+
+[node name="FirstGameUI" type="TextureRect" parent="."]
+visible = false
+z_index = 4
+custom_minimum_size = Vector2(176, 24)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -131.322
+offset_right = 88.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("11_sw3pa")
+expand_mode = 5
+stretch_mode = 5
+
+[node name="Timer" type="Timer" parent="FirstGameUI"]
+wait_time = 3.5
+autostart = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="FirstGameUI"]
+libraries = {
+"": SubResource("AnimationLibrary_knjfh")
+}
+autoplay = "fade"
 
 [node name="Ball" type="Sprite2D" parent="."]
 z_index = 2
@@ -320,47 +405,49 @@ offset_right = 960.0
 offset_bottom = 540.0
 texture = ExtResource("15_7e7n7")
 
-[node name="Item6" parent="." instance=ExtResource("6_vt5ph")]
+[node name="ShelfStuff" type="Node2D" parent="."]
 position = Vector2(746, 258)
-animation = &"coin_bag"
 
-[node name="Item5" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(279, 258)
-animation = &"coin_bag"
+[node name="Distraction" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
+position = Vector2(-335, -37)
 
-[node name="Item4" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(685, 155)
-animation = &"crown"
-
-[node name="Item3" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(276, 153)
-
-[node name="Item2" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(747, 67)
-animation = &"crown"
-
-[node name="Item" parent="." instance=ExtResource("6_vt5ph")]
-position = Vector2(320, 75)
-animation = &"coin_bag"
-
-[node name="Distraction5" parent="." instance=ExtResource("15_s54gj")]
-position = Vector2(632, 215)
-animation = &"jack_in_the_box"
-
-[node name="Distraction4" parent="." instance=ExtResource("15_s54gj")]
-position = Vector2(632, 215)
-animation = &"jack_in_the_box"
-
-[node name="Distraction3" parent="." instance=ExtResource("15_s54gj")]
-position = Vector2(385, 115)
+[node name="Distraction2" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
+position = Vector2(-107, -228)
 animation = &"firecrackers"
 
-[node name="Distraction2" parent="." instance=ExtResource("15_s54gj")]
-position = Vector2(639, 30)
+[node name="Distraction3" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
+position = Vector2(-361, -143)
 animation = &"firecrackers"
 
-[node name="Distraction" parent="." instance=ExtResource("15_s54gj")]
-position = Vector2(411, 221)
+[node name="Distraction4" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
+position = Vector2(-114, -43)
+animation = &"jack_in_the_box"
+
+[node name="Distraction5" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
+position = Vector2(-114, -43)
+animation = &"jack_in_the_box"
+
+[node name="Item" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+position = Vector2(-426, -183)
+animation = &"coin_bag"
+
+[node name="Item2" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+position = Vector2(1, -191)
+animation = &"crown"
+
+[node name="Item3" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+position = Vector2(-470, -105)
+
+[node name="Item4" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+position = Vector2(-61, -103)
+animation = &"crown"
+
+[node name="Item5" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+position = Vector2(-467, 0)
+animation = &"coin_bag"
+
+[node name="Item6" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+animation = &"coin_bag"
 
 [node name="PauseButton" type="ColorRect" parent="."]
 layout_mode = 0
@@ -395,6 +482,7 @@ theme_override_font_sizes/font_size = 39
 text = "Pause"
 
 [connection signal="timeout" from="Cursor/Timer" to="." method="_on_cursor_timer_timeout"]
+[connection signal="timeout" from="FirstGameUI/Timer" to="." method="_on_first_game_ui_timeout"]
 [connection signal="peak_now" from="Ball" to="." method="_on_ball_peak"]
 [connection signal="animation_finished" from="Ball/AnimationPlayer" to="." method="_on_ball_animation_finished"]
 [connection signal="timeout" from="Shopkeep/PositionTimer" to="." method="_on_shopkeep_position_timer_timeout"]
