@@ -8,7 +8,8 @@ var shopkeep_icons = {
 	"normal": load("res://ui/distractionbar_icon.png"),
 	"sus": load("res://ui/distractionbar_icon_sus.png")}
 enum items {COIN_BAG,CROWN,GEMS,POTION}
-var item_icons = [load("res://ui/icon_coin_bag.png"),load("res://ui/icon_crown.png"),load("res://ui/icon_gems.png"),load("res://entities/items/potion/potion1.png")]
+var item_icons = [load("res://ui/icon_coin_bag.png"),load("res://ui/icon_crown.png"),load("res://ui/icon_gems.png"),load("res://ui/icon_potion.png")]
+enum distractions {BOTTLE,FIRECRACKERS,JACK_IN_THE_BOX}
 var shopkeep_tex = {
 	-2: load("res://entities/shopkeep/shopkeep_ll.png"),
 	-1: load("res://entities/shopkeep/shopkeep_l.png"),
@@ -18,14 +19,14 @@ var shopkeep_tex = {
 var shopkeep_tex_sus = {
 	-2: load("res://entities/shopkeep/shopkeep_ll.png"),
 	-1: load("res://entities/shopkeep/shopkeep_l.png"),
-	0: load("res://entities/shopkeep/shopkeep.png"),
+	0: load("res://entities/shopkeep/shopkeep_sus.png"),
 	1: load("res://entities/shopkeep/shopkeep_r.png"),
 	2: load("res://entities/shopkeep/shopkeep_rr.png")}
 
 var started = false
 var cursor_shelf = 0
 var item_list = [items.COIN_BAG,items.CROWN,items.GEMS]
-var list_crossed = item_list.duplicate(false)
+var list_crossed
 var status = AIMING
 var mouse_moved = false
 
@@ -34,8 +35,28 @@ var distraction = .7
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-	for i in item_list:
-		i = randi_range(0,2)
+	for i in $Distractions.get_children():
+		i.animation = distractions.keys()[randi_range(0,2)].to_snake_case()
+	for i in $Items.get_children():
+		i.animation = items.keys()[randi_range(0,3)].to_snake_case()
+	for i in item_list.size():
+		var rand_item_val = randi_range(0,3)
+		item_list[i] = rand_item_val
+		var rand_item_found = false
+		for j in $Items.get_children():
+			if !j.is_in_group('required_items') and j.animation == items.keys()[rand_item_val].to_snake_case():
+				j.add_to_group('required_items')
+				rand_item_found = true
+				break
+		if !rand_item_found:
+			var rand_item_place = randi_range(0,$Items.get_child_count()-1)
+			var rand_item = $Items.get_child(rand_item_place)
+			while rand_item.get_groups().has('required_items'):
+				rand_item_place = randi_range(0,$Items.get_child_count()-1)
+				rand_item = $Items.get_child(rand_item_place)
+			rand_item.animation = items.keys()[rand_item_val].to_snake_case()
+			rand_item.add_to_group('required_items')
+	list_crossed = item_list.duplicate(false)
 	for i in $LeftHand/ItemList.get_child_count():
 		$LeftHand/ItemList.get_child(i).texture = item_icons[item_list[i]]
 	if GameEndStats.first_game:
@@ -46,6 +67,8 @@ func _process(delta):
 	if Input.is_action_just_pressed('action'):
 		if status == AIMING:
 			status = THROWING
+			if GameEndStats.first_game:
+				$FirstGameUI/AnimationPlayer.play('click')
 	if Input.is_action_just_released('action'):
 		if status == THROWING:
 			status = EMPTY
@@ -60,8 +83,12 @@ func _process(delta):
 			$Shopkeep/PositionTimer.stop()
 			$Shopkeep/DistractionTimer.stop()
 			$Ball/AnimationPlayer.play('throw')
-			
-	$Shopkeep.texture = shopkeep_tex.get(shopkeep_dir)
+	
+	if distraction > .3:
+		$Shopkeep.texture = shopkeep_tex.get(shopkeep_dir)
+	else:
+		$Shopkeep.texture = shopkeep_tex_sus.get(shopkeep_dir)
+		$BkgMusic.pitch_scale = 1.9
 	#Status
 	$RightHand.texture = right_hand_tex[status]
 	if status == AIMING:
@@ -69,9 +96,9 @@ func _process(delta):
 		$RightHand.position.x = 810 - get_global_mouse_position().x / 300
 	if status == THROWING:
 		if !cursor_scrolling: scroll_cursor()
+	if started:
 		if GameEndStats.first_game:
 			$FirstGameUI.hide()
-	if started:
 		#Distraction
 		var distraction_position = $DistractionBar.size.x * distraction
 		$DistractionBar/FillMask.size.x = distraction_position
@@ -106,41 +133,48 @@ func _on_ball_peak():
 		for i in $Ball/Area2D.get_overlapping_areas():
 			if i.is_in_group('pause_area'):
 				WindowControls.pause()
-			elif i.is_in_group('item_area'):
-				print("ding")
-				var i_dir_clamped = clampi(i.get_parent().global_position.x - $Shopkeep.global_position.x,-1,1)
-				var shopkeep_dir_clamped = clampi(shopkeep_dir,-1,1)
-				var item_id = items.get(i.get_parent().animation.to_upper())
-				i.get_parent().play()
-				await get_tree().create_timer(1).timeout
-				if !$Shopkeep/DistractionTimer.time_left:
-					shopkeep_dir = i_dir_clamped
-				distraction = clamp(distraction-.1,0,1)
-				if i_dir_clamped != shopkeep_dir_clamped:
-					if list_crossed.find(item_id) != -1:
-						print("scrawling")
-						list_crossed.pop_at(list_crossed.find(item_id))
-						$LeftHand/ItemList.get_child(item_id).get_node("Slash").show()
-						if !list_crossed.size():
-							end_game(list_crossed)
-				else:
-					end_game(list_crossed)
-				break
-			elif i.is_in_group('distraction_area'):
-				if i.get_parent().used == false:
-					i.get_parent().used = true
+			else:
+				if i.is_in_group('item_area'):
+					print("ding")
+					$SFX/Ding.play()
 					var i_dir_clamped = clampi(i.get_parent().global_position.x - $Shopkeep.global_position.x,-1,1)
-					print("dong")
+					var shopkeep_dir_clamped = clampi(shopkeep_dir,-1,1)
+					var item_id = items.get(i.get_parent().animation.to_upper())
 					i.get_parent().play()
-					$Shopkeep/PositionTimer.set_paused(true)
-					$Shopkeep/DistractionTimer.start()
-					shopkeep_dir = clampi(i_dir_clamped,-1,1)*2
-					distraction = clamp(distraction+.4,0,1)
-		distraction = clamp(distraction-.1,0,1)
+					await get_tree().create_timer(1).timeout
+					if !$Shopkeep/DistractionTimer.time_left:
+						shopkeep_dir = i_dir_clamped
+					distraction = clamp(distraction-.1,0,1)
+					if i_dir_clamped != shopkeep_dir_clamped:
+						print(list_crossed)
+						print(item_id)
+						if list_crossed.find(item_id) != -1:
+							print("scrawling")
+							$SFX/Scrawling.play()
+							list_crossed.pop_at(list_crossed.find(item_id))
+							$LeftHand/ItemList.get_child(item_list.find(item_id)).get_node("Slash").show()
+							if !list_crossed.size():
+								end_game(list_crossed)
+					else:
+						end_game(list_crossed)
+					break
+				elif i.is_in_group('distraction_area'):
+					if i.get_parent().used == false:
+						i.get_parent().used = true
+						var i_dir_clamped = clampi(i.get_parent().global_position.x - $Shopkeep.global_position.x,-1,1)
+						print("dong")
+						i.get_parent().play()
+						i.get_parent().get_node("SFX").get_node(i.get_parent().animation.to_pascal_case()).play()
+						$Shopkeep/PositionTimer.set_paused(true)
+						$Shopkeep/DistractionTimer.start()
+						shopkeep_dir = clampi(i_dir_clamped,-1,1)*2
+						distraction = clamp(distraction+.4,0,1)
+				distraction = clamp(distraction-.1,0,1)
 	else:
 		for i in $Ball/Area2D.get_overlapping_areas():
 			if i.is_in_group('begin_area'):
 				print("starting")
+				$BkgMusic.play()
 				started = true
 				$Title.hide()
 				$DistractionBar.show()

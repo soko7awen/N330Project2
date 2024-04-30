@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dpmpd3c7aj66g"]
+[gd_scene load_steps=24 format=3 uid="uid://dpmpd3c7aj66g"]
 
 [ext_resource type="Texture2D" uid="uid://c5336hx1vsb47" path="res://entities/items/coin_bag/coin_bag1.png" id="1_8xlib"]
 [ext_resource type="Texture2D" uid="uid://ddx5smtis05l" path="res://entities/items/coin_bag/coin_bag2.png" id="2_uma4t"]
@@ -13,6 +13,11 @@
 [ext_resource type="Texture2D" uid="uid://bs7yujqr02ya6" path="res://entities/items/gems/gem_triple2.png" id="10_5r282"]
 [ext_resource type="Texture2D" uid="uid://byacc66hp6v7" path="res://entities/items/gems/gem_triple3.png" id="11_o17xb"]
 [ext_resource type="Texture2D" uid="uid://bvfqlq41kavii" path="res://entities/items/gems/gem_triple4.png" id="12_tl0tw"]
+[ext_resource type="Texture2D" uid="uid://c50cf66kjbjdk" path="res://entities/items/potion/potion1.png" id="13_5aruv"]
+[ext_resource type="Texture2D" uid="uid://ddg61sdctg3ox" path="res://entities/items/potion/potion2.png" id="14_r3wtw"]
+[ext_resource type="Texture2D" uid="uid://bl43tqjemnmh5" path="res://entities/items/potion/potion3.png" id="15_1o4dd"]
+[ext_resource type="Texture2D" uid="uid://ca7vbxvrard1j" path="res://entities/items/potion/potion4.png" id="16_8wsxd"]
+[ext_resource type="Texture2D" uid="uid://n888qux0bmu8" path="res://entities/items/potion/potion5.png" id="17_re7na"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_41rgd"]
 animations = [{
@@ -66,6 +71,26 @@ animations = [{
 "loop": false,
 "name": &"gems",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 0.65,
+"texture": ExtResource("13_5aruv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_r3wtw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_1o4dd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_8wsxd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_re7na")
+}],
+"loop": false,
+"name": &"potion",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_w7xp6"]
@@ -77,9 +102,12 @@ size = Vector2(128, 57)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ketoq"]
 size = Vector2(108, 50)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0qh0q"]
+size = Vector2(67, 100)
+
 [node name="Item" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_41rgd")
-animation = &"gems"
+animation = &"potion"
 script = ExtResource("5_m3j4q")
 
 [node name="Area2D" type="Area2D" parent="." groups=["item_area"]]
@@ -99,6 +127,12 @@ debug_color = Color(0, 0.6, 0.701961, 0)
 [node name="Gems" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(6, 1)
 shape = SubResource("RectangleShape2D_ketoq")
+disabled = true
+debug_color = Color(0, 0.6, 0.701961, 0)
+
+[node name="Potion" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-1.5, 4)
+shape = SubResource("RectangleShape2D_0qh0q")
 disabled = true
 debug_color = Color(0, 0.6, 0.701961, 0)
 

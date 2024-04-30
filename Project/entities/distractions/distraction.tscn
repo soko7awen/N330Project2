@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://b860ys2ckxmad"]
+[gd_scene load_steps=28 format=3 uid="uid://b860ys2ckxmad"]
 
 [ext_resource type="Texture2D" uid="uid://cumqo515hpion" path="res://entities/distractions/bottle/bottle1.png" id="1_trmk0"]
 [ext_resource type="Texture2D" uid="uid://cknkeqrxqewv0" path="res://entities/distractions/bottle/bottle2.png" id="2_ki6ph"]
@@ -20,6 +20,9 @@
 [ext_resource type="Texture2D" uid="uid://biqajyh1t4pac" path="res://entities/distractions/jack_in_the_box/jack_in_the_box3.png" id="17_ddxav"]
 [ext_resource type="Texture2D" uid="uid://u6jpglmgk87o" path="res://entities/distractions/jack_in_the_box/jack_in_the_box4.png" id="18_c2qak"]
 [ext_resource type="Texture2D" uid="uid://dkvlpcgq8jykf" path="res://entities/distractions/jack_in_the_box/jack_in_the_box5.png" id="19_dkq85"]
+[ext_resource type="AudioStream" uid="uid://d178ckv7posw5" path="res://entities/distractions/bottle/bottle.mp3" id="21_lgvco"]
+[ext_resource type="AudioStream" uid="uid://cum0es4umal6k" path="res://entities/distractions/firecrackers/firecrackers.mp3" id="22_61x7k"]
+[ext_resource type="AudioStream" uid="uid://dhhcc4y0fhpr8" path="res://entities/distractions/jack_in_the_box/jack_in_the_box.mp3" id="23_b6vla"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_41rgd"]
 animations = [{
@@ -113,7 +116,7 @@ script = ExtResource("3_u2m3w")
 [node name="Area2D" type="Area2D" parent="." groups=["distraction_area"]]
 
 [node name="Bottle" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(-32, -1)
+position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_w7xp6")
 disabled = true
 debug_color = Color(0, 0.6, 0.701961, 0)
@@ -129,5 +132,18 @@ position = Vector2(-5, 27)
 shape = SubResource("RectangleShape2D_51nhq")
 disabled = true
 debug_color = Color(0, 0.6, 0.701961, 0)
+
+[node name="SFX" type="Node" parent="."]
+
+[node name="Bottle" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("21_lgvco")
+
+[node name="Firecrackers" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("22_61x7k")
+volume_db = -15.0
+
+[node name="JackInTheBox" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("23_b6vla")
+volume_db = -5.0
 
 [connection signal="animation_finished" from="." to="." method="_on_animation_finished"]

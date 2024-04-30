@@ -1,6 +1,6 @@
 extends Control
 var main_scene = load("res://scenes/main/main.tscn")
-var item_icons = [load("res://entities/items/coin_bag/coin_bag_icon.png"),load("res://entities/items/crown/crown_icon.png"),load("res://entities/items/gems/gem_triple_icon.png")]
+var item_stills = [load("res://entities/items/coin_bag/coin_bag_still.png"),load("res://entities/items/crown/crown_still.png"),load("res://entities/items/gems/gem_triple_still.png"),load("res://entities/items/potion/potion_still.png")]
 
 func _ready():
 	GameEndStats.first_game = false
@@ -14,10 +14,10 @@ func _ready():
 		$MarginContainer/Text/CountMsgContainer/Count.text = str(int(time_took))
 		$MarginContainer/Text/CountMsgContainer/Msg2.text = " Seconds"
 		for i in $Items.get_children().size():
-			$Items.get_child(i).texture = item_icons[GameEndStats.item_list[i]]
+			$Items.get_child(i).texture = item_stills[GameEndStats.item_list[i]]
 		$Items.show()
 	else:
-		$MarginContainer/Text/CountMsgContainer/Count.text = str(GameEndStats.items_crossed.size())
+		$MarginContainer/Text/CountMsgContainer/Count.text = str(GameEndStats.item_list.size()-GameEndStats.items_crossed.size())
 		if GameEndStats.items_crossed.size() == 1:
 			$MarginContainer/Text/CountMsgContainer/Msg2.text = " Item"
 

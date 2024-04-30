@@ -1,14 +1,17 @@
-[gd_scene load_steps=34 format=3 uid="uid://bvnq3ihcq0wv5"]
+[gd_scene load_steps=39 format=3 uid="uid://bvnq3ihcq0wv5"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_ugoic"]
+[ext_resource type="AudioStream" uid="uid://dumvvegagsow8" path="res://scenes/main/background_music.mp3" id="2_fs43o"]
 [ext_resource type="Texture2D" uid="uid://b2ekrwndbhis3" path="res://ui/title.png" id="2_jihug"]
 [ext_resource type="Texture2D" uid="uid://du0c1iflhkw3w" path="res://scenes/main/shop.png" id="2_qyw7l"]
 [ext_resource type="Texture2D" uid="uid://dhpocmwr8t1rf" path="res://ui/cursor.png" id="2_upoqs"]
 [ext_resource type="Script" path="res://scenes/title/title.gd" id="2_xrnhi"]
+[ext_resource type="AudioStream" uid="uid://d178ckv7posw5" path="res://entities/distractions/bottle/bottle.mp3" id="3_6dcnr"]
 [ext_resource type="Texture2D" uid="uid://ojnb75vsbxf7" path="res://ui/distractionbar_empty.png" id="3_6jo23"]
 [ext_resource type="Texture2D" uid="uid://cc3dcwj82gj8e" path="res://ui/begin.png" id="3_an3ry"]
 [ext_resource type="Texture2D" uid="uid://bwnyygajk5akb" path="res://ui/right_hand_aim.png" id="3_hco4p"]
 [ext_resource type="Texture2D" uid="uid://ds7lj3h5h42yl" path="res://scenes/main/shelf.png" id="3_mf8wl"]
+[ext_resource type="AudioStream" uid="uid://cxjicqhy0eixw" path="res://entities/items/item_get.mp3" id="3_v5re7"]
 [ext_resource type="Texture2D" uid="uid://2wfoqqn4a5or" path="res://ui/ball.png" id="4_hkygl"]
 [ext_resource type="Texture2D" uid="uid://ca6g1w13mniov" path="res://ui/left_hand.png" id="4_n444t"]
 [ext_resource type="Texture2D" uid="uid://3dpayfjb657w" path="res://ui/distractionbar_full.png" id="4_r6jam"]
@@ -17,7 +20,7 @@
 [ext_resource type="Script" path="res://ui/ball.gd" id="7_eovov"]
 [ext_resource type="AnimationLibrary" uid="uid://dvf0dx0kehgy0" path="res://globals/animation_library.tres" id="7_lo4so"]
 [ext_resource type="Texture2D" uid="uid://dfdlab6im6hvc" path="res://entities/shopkeep/shopkeep.png" id="8_bjod3"]
-[ext_resource type="Texture2D" uid="uid://d0ocmp2o0sypr" path="res://entities/items/coin_bag/coin_bag_icon.png" id="8_mbkdx"]
+[ext_resource type="Texture2D" uid="uid://d0ocmp2o0sypr" path="res://entities/items/coin_bag/coin_bag_still.png" id="8_mbkdx"]
 [ext_resource type="Texture2D" uid="uid://dk8ohftunwrvg" path="res://ui/instructions_mousehighlight.png" id="11_8tk2v"]
 [ext_resource type="Texture2D" uid="uid://dektal54le410" path="res://ui/item_slash.png" id="11_jpylb"]
 [ext_resource type="Texture2D" uid="uid://76mcet1cjdbg" path="res://ui/instructions_mousescroll.png" id="11_sw3pa"]
@@ -25,9 +28,10 @@
 [ext_resource type="Texture2D" uid="uid://bhuhssfo75qie" path="res://scenes/main/table.png" id="15_7e7n7"]
 [ext_resource type="PackedScene" uid="uid://b860ys2ckxmad" path="res://entities/distractions/distraction.tscn" id="15_s54gj"]
 [ext_resource type="FontFile" uid="uid://dl8717bgierds" path="res://ui/pixelify_sans_regular.ttf" id="16_tp0q4"]
+[ext_resource type="Texture2D" uid="uid://00iuw3h8i8lt" path="res://ui/side_sign_blank.png" id="25_12w2q"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5sgo1"]
-size = Vector2(240, 48)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jaadf"]
+size = Vector2(247, 50)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_04f1q"]
 atlas = ExtResource("2_upoqs")
@@ -106,6 +110,9 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kycfc"]
 size = Vector2(8, 8)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5sgo1"]
+size = Vector2(79, 142.999)
+
 [node name="Main" type="Control"]
 texture_filter = 1
 layout_mode = 3
@@ -116,11 +123,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ugoic")
 
+[node name="BkgMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_fs43o")
+
 [node name="SFX" type="Node" parent="."]
 
 [node name="Ding" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("3_6dcnr")
 
 [node name="Scrawling" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("3_v5re7")
+volume_db = -13.0
 
 [node name="Title" type="Control" parent="."]
 z_index = 2
@@ -163,8 +176,8 @@ texture = ExtResource("3_an3ry")
 [node name="Area2D" type="Area2D" parent="Title/BeginButton" groups=["begin_area"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Title/BeginButton/Area2D"]
-position = Vector2(120, 24.0008)
-shape = SubResource("RectangleShape2D_5sgo1")
+position = Vector2(123.5, 25)
+shape = SubResource("RectangleShape2D_jaadf")
 
 [node name="TitleMarkers" type="Node2D" parent="."]
 position = Vector2(0, 199)
@@ -405,63 +418,61 @@ offset_right = 960.0
 offset_bottom = 540.0
 texture = ExtResource("15_7e7n7")
 
-[node name="ShelfStuff" type="Node2D" parent="."]
+[node name="Items" type="Node2D" parent="."]
 position = Vector2(746, 258)
 
-[node name="Distraction" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
-position = Vector2(-335, -37)
-
-[node name="Distraction2" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
-position = Vector2(-107, -228)
-animation = &"firecrackers"
-
-[node name="Distraction3" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
-position = Vector2(-361, -143)
-animation = &"firecrackers"
-
-[node name="Distraction4" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
-position = Vector2(-114, -43)
-animation = &"jack_in_the_box"
-
-[node name="Distraction5" parent="ShelfStuff" instance=ExtResource("15_s54gj")]
-position = Vector2(-114, -43)
-animation = &"jack_in_the_box"
-
-[node name="Item" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+[node name="Item" parent="Items" instance=ExtResource("6_vt5ph")]
 position = Vector2(-426, -183)
 animation = &"coin_bag"
 
-[node name="Item2" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+[node name="Item2" parent="Items" instance=ExtResource("6_vt5ph")]
 position = Vector2(1, -191)
 animation = &"crown"
 
-[node name="Item3" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+[node name="Item3" parent="Items" instance=ExtResource("6_vt5ph")]
 position = Vector2(-470, -105)
 
-[node name="Item4" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+[node name="Item4" parent="Items" instance=ExtResource("6_vt5ph")]
 position = Vector2(-61, -103)
 animation = &"crown"
 
-[node name="Item5" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+[node name="Item5" parent="Items" instance=ExtResource("6_vt5ph")]
 position = Vector2(-467, 0)
 animation = &"coin_bag"
 
-[node name="Item6" parent="ShelfStuff" instance=ExtResource("6_vt5ph")]
+[node name="Item6" parent="Items" instance=ExtResource("6_vt5ph")]
 animation = &"coin_bag"
 
-[node name="PauseButton" type="ColorRect" parent="."]
+[node name="Distractions" type="Node2D" parent="."]
+position = Vector2(746, 258)
+
+[node name="Distraction" parent="Distractions" instance=ExtResource("15_s54gj")]
+position = Vector2(-107, -228)
+animation = &"firecrackers"
+
+[node name="Distraction2" parent="Distractions" instance=ExtResource("15_s54gj")]
+position = Vector2(-361, -143)
+animation = &"firecrackers"
+
+[node name="Distraction3" parent="Distractions" instance=ExtResource("15_s54gj")]
+position = Vector2(-335, -37)
+
+[node name="Distraction4" parent="Distractions" instance=ExtResource("15_s54gj")]
+position = Vector2(-114, -43)
+animation = &"jack_in_the_box"
+
+[node name="PauseButton" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 48.0
-offset_top = 31.0
-offset_right = 288.0
-offset_bottom = 79.0
-rotation = 1.57079
-color = Color(0.494118, 0.494118, 0.494118, 1)
+offset_top = 59.0
+offset_right = 80.0
+offset_bottom = 203.0
+texture = ExtResource("25_12w2q")
+stretch_mode = 4
 
 [node name="Area2D" type="Area2D" parent="PauseButton" groups=["pause_area"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PauseButton/Area2D"]
-position = Vector2(120, 24.0008)
+position = Vector2(39.5, 71.5004)
 shape = SubResource("RectangleShape2D_5sgo1")
 
 [node name="Label" type="Label" parent="PauseButton"]
@@ -471,12 +482,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -57.0
+offset_left = -48.0
 offset_top = -23.5
-offset_right = 57.0
+offset_right = 66.0
 offset_bottom = 23.5
 grow_horizontal = 2
 grow_vertical = 2
+rotation = 1.5708
+pivot_offset = Vector2(57, 23.5)
 theme_override_fonts/font = ExtResource("16_tp0q4")
 theme_override_font_sizes/font_size = 39
 text = "Pause"
